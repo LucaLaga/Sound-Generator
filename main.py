@@ -8,9 +8,12 @@ DURATION = 2
 SAMPLE_RATE = 44100
 T = np.linspace(0, DURATION, int(DURATION * SAMPLE_RATE))
 
+# Funzione del menu per prendere la Root Frequency
 def menu():
+    # Scelta di inserire la frequenza o il nome della nota
     choice = int(input("1. Inserisci la frequenza\n2. Inserisci il nome della nota\n--> "))
 
+    # Switch Case per definire la frequenza
     match choice:
         case 1:
             rootFrequency = getRightFreq(float(input("Inserisci la frequenza: ")))
@@ -28,10 +31,13 @@ def menu():
     5. Sus4
     6. Augmented
     """
+
+    # Input del tipo di accordo bastato sul commento scritto sopra
     chordType = int(input("Inserisci il tipo di accordo (Da 1 a 6): "))
         
     return rootFrequency, chordType
 
+# Funzione per generare le sinusoidali delle note, dell'accordo e degli armonici
 def wave_generator(rootFrequency, chordType):
     note1Wave = (generate_noteWave(rootFrequency, DURATION, SAMPLE_RATE) * 32767).astype(np.int16)
     chordWave = (generate_chordWave(rootFrequency, DURATION, chordType, SAMPLE_RATE) * 32767).astype(np.int16)
@@ -43,6 +49,7 @@ def wave_generator(rootFrequency, chordType):
 
     return note1Wave, note2Wave, note3Wave, chordWave, harmonicWave
 
+# Funzione per la scrittura dei file .wav
 def file_writer(note1Wave, note2Wave, note3Wave, chordWave, harmonicWave):
     wavfile.write("1.wav", SAMPLE_RATE, note1Wave)
     wavfile.write("2.wav", SAMPLE_RATE, note2Wave)
@@ -52,6 +59,7 @@ def file_writer(note1Wave, note2Wave, note3Wave, chordWave, harmonicWave):
 
     wavfile.write("harmonics.wav", SAMPLE_RATE, harmonicWave)
 
+# Funzione che genera i grafici delle sinusoidali
 def plot_generator(note1Wave, note2Wave, note3Wave, chordWave, harmonicWave):
     plt.subplot(3, 1, 1)
     plt.plot(T[:1024], note1Wave[:1024], label="Note 1")
@@ -68,6 +76,7 @@ def plot_generator(note1Wave, note2Wave, note3Wave, chordWave, harmonicWave):
     plt.tight_layout()
     plt.show()
 
+# Main Function dove runno il codice
 def main():
     rootFrequency, chordType = menu()
     note1Wave, note2Wave, note3Wave, chordWave, harmonicWave = wave_generator(rootFrequency, chordType)
@@ -78,3 +87,5 @@ def main():
 
     plot_generator(note1Wave, note2Wave, note3Wave, chordWave, harmonicWave)
 
+if __name__ == "__main__":
+    main()
